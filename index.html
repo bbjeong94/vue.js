@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>hello vue.js</title>
+    <script src="http://unpkg.com/vue@2.5.16/dist/vue.js"></script>
+</head>
+
+<body>
+    <div id="simple">
+        <!-- ex 1 -->
+        <!-- <h2>{{message}}</h2> -->
+        <!-- v-html은 <script>태그를 그대로 바인딩하기 때문에 XSS공격에 취약 -->
+        <!-- <h2 v-html="message"></h2> -->
+        <!-- v-html을 사용하는 것 보다 v-text를 사용하는 것이 더 안전 -->
+        <!-- <h2 v-text="message"></h2> -->
+
+        <!-- ex 2 -->
+        <input id="a" type="text" v-bind:value="message">
+        <input id="a" type="text" :value="message">
+        <br/>
+        <img v-bind:src="imagePath" />
+        <img :src="imagePath" />
+    </div>
+
+    <!-- count ex -->
+    <div>
+        <div id="count">
+            <p>Count : {{count}}</p>
+            <button @click="decrease()">-</button>
+            <button @click="increase()">+</button>
+        </div>
+    </div>
+
+    <!-- todo ex -->
+    <div id="todo">
+        <input type="text" v-model="input" @keydown.enter="addTodo" />
+        <button @click="addTodo">Add TODO</button>
+        <ul>
+            <li v-for="todo in todos" v-text="todo.text" :style="{ textDecoration: todo.isDone ? 'line-through' : 'none' }" @click="toggleTodo(todo)"></li>
+        </ul>
+        <p>Total: {{ todosCount }}</p>
+        <p>Active: {{ todosCount - doneTodosCount }}</p>
+        <p>Done: {{ doneTodosCount }}</p>
+    </div>
+    <script type="text/javascript">
+        // ex 1
+        // var model = {
+        //     message: '첫 번째 vue.js 앱입니다.'
+        // };
+
+        // var simple = new Vue({
+        //     el: '#simple',
+        //     data: model
+        // })
+
+        // ex 2
+        var model = {
+            message: 'v-bind 디렉티브',
+            imagePath: "http://sample.bmaster.kro.kr/photos/61.jpg"
+        };
+
+        var simple = new Vue({
+            el: '#simple',
+            data: model
+        })
+
+        // count ex function
+        new Vue({
+            el: '#count',
+            data: {
+                count: 0,
+            },
+            methods: {
+                decrease() {
+                    this.count--;
+                },
+                increase() {
+                    this.count++;
+                }
+            }
+        })
+        new Vue({
+            el: '#todo',
+            data: {
+                input: '',
+                todos: [],
+            },
+            computed: {
+                todosCount() {
+                    return this.todos.length.toString();
+                },
+                doneTodosCount() {
+                    return this.todos.filter(e => e.isDone).length;
+                },
+            },
+            methods: {
+                addTodo() {
+                    this.todos.push({
+                        text: this.input,
+                        isDone: false,
+                    });
+                    this.input = '';
+                },
+                toggleTodo(todo) {
+                    todo.isDone = !todo.isDone;
+                },
+            },
+        });
+    </script>
+</body>
+
+</html>
